@@ -23,19 +23,31 @@ def find_parent(i3, window_id):
     return finder(i3.get_tree(), None)
 
 
-def set_layout(i3, e):
+def set_layout(i3, _):
     """
         Set the layout/split for the currently
         focused window to either vertical or
         horizontal, depending on its width/height
     """
+
+    """
+        NOTE: if you only want to monitor splits
+        without automatically changing them,
+        comment out the two i3.command lines
+        and replace
+        `elif win.rect.height > win.rect.width:`
+        with
+        `elif parent.layout == "splitv":`
+    """
     win = i3.get_tree().find_focused()
     parent = find_parent(i3, win.id)
 
-    if (parent and parent.layout != 'tabbed'
-            and parent.layout != 'stacked'):
-
-        if win.rect.height > win.rect.width:
+    if parent:
+        if parent.layout == "tabbed":
+            print(" t")
+        elif parent.layout == "stacked":
+            print(" s")
+        elif win.rect.height > win.rect.width:
             i3.command('split v')
             print(" ↓")
         else:
@@ -57,6 +69,8 @@ def polybar_print(i3, e):
             print(" ↓")
         else:
             print("→")
+    elif cmd == "layout":
+        print(" " + args[0][0])
     elif cmd == "move":
         set_layout(i3, e)
 
