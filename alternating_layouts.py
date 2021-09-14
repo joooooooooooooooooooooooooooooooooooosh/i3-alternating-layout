@@ -5,6 +5,13 @@ import sys
 import os
 from i3ipc import Connection, Event
 
+def print_help():
+    print("Usage: " + sys.argv[0] + " [-p path/to/pid.file]")
+    print("")
+    print("Options:")
+    print("    -p path/to/pid.file   Saves the PID for this program in the filename specified")
+    print("")
+
 
 def find_parent(i3, window_id):
     """
@@ -43,36 +50,39 @@ def set_layout(i3, _):
     parent = find_parent(i3, win.id)
 
     if parent:
-        if parent.layout == "tabbed":
-            print(" t")
-        elif parent.layout == "stacked":
-            print(" s")
+        if parent.layout in ("tabbed", "stacked"):
+            print_status(parent.layout)
         elif win.rect.height > win.rect.width:
             i3.command('split v')
-            print(" ↓")
+            print_status("v")
         else:
             i3.command('split h')
-            print("→")
+            print_status("h")
 
 
-def print_help():
-    print("Usage: " + sys.argv[0] + " [-p path/to/pid.file]")
-    print("")
-    print("Options:")
-    print("    -p path/to/pid.file   Saves the PID for this program in the filename specified")
-    print("")
+def print_status(split):
+    if split == "v":
+        print(" ↓")
+    elif split == "h":
+        print("→")
+    elif split == "tabbed":
+        print(" t")
+    elif split == "stacked":
+        print(" s")
 
-def polybar_print(i3, e):
+
+def keybind_hook(i3, e):
     cmd, *args = e.binding.command.split()
     if cmd == "split":
-        if args[0] == "vertical":
-            print(" ↓")
-        else:
-            print("→")
+        print_status(args[0][0])
     elif cmd == "layout":
-        print(" " + args[0][0])
+        if args[0][:-1] == "split":
+            print_status(args[0][-1])
+        else:
+            print_status(args[0])
     elif cmd == "move":
         set_layout(i3, e)
+
 
 def main():
     """
@@ -95,7 +105,7 @@ def main():
 
     i3 = Connection()
     i3.on(Event.WINDOW_FOCUS, set_layout)
-    i3.on(Event.BINDING, polybar_print)
+    i3.on(Event.BINDING, keybind_hook)
     set_layout(i3, "")
     i3.main()
 
