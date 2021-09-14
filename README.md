@@ -1,38 +1,25 @@
 i3-alternating-layout
 =====================
 
+This fork turns i3-alternating_layout into a polybar module that will inform you of the current split direction. Since the split is usually handled automatically by the script, it's not always useful, but you can disable the split change functionality if you want to keep the manual splits and have your bar inform you of what split you've set for each window.
+
 Scripts to open new windows in i3wm/Sway using alternating layouts (splith/splitv) for each new window. These scripts were made for [/u/ke7ofi](http://www.reddit.com/user/ke7ofi) after they asked a question on how to do this [you can read the question here](http://www.reddit.com/r/i3wm/comments/1sdc39/alternating_horizontal_and_vertical_splitting/).
 
 Installation
 ------------
-### Ubuntu
-
 ```
-sudo apt-get install python3-pip git
 pip3 install i3ipc
-git clone https://github.com/olemartinorg/i3-alternating-layout
+git clone https://github.com/joooooooooooooooooooooooooooooooooooosh/i3-alternating-layout
 ```
-And add `alternating_layouts.py` to your `~/.i3/config` autostart:
-```
-exec --no-startup-id /path/to/alternating_layouts.py
-```
-### Arch Linux 
-Install `python-i3ipc`, then either:
 
-Clone this repository or install from the [AUR](https://aur.archlinux.org/packages/alternating-layouts-git/).
+Then add this module to your polybar config and ensure `split` is added to the list of active modules:
 
-Then, for i3 add:
 ```
-exec --no-startup-id /path/to/alternating_layouts.py
+[module/split]
+type = custom/script
+exec = python -u /path/to/alternating_layouts.py
+tail = true
 ```
-to your `~/.i3/config`.
-
-Or, for Sway add:
-```
-exec /path/to/alternating_layouts.py
-```
-to your `~/.config/sway/config`.
-
 
 Screenshot
 ----------

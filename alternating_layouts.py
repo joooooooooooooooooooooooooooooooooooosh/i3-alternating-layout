@@ -37,8 +37,10 @@ def set_layout(i3, e):
 
         if win.rect.height > win.rect.width:
             i3.command('split v')
+            print(" ↓")
         else:
             i3.command('split h')
+            print("→")
 
 
 def print_help():
@@ -48,6 +50,15 @@ def print_help():
     print("    -p path/to/pid.file   Saves the PID for this program in the filename specified")
     print("")
 
+def polybar_print(i3, e):
+    cmd, *args = e.binding.command.split()
+    if cmd == "split":
+        if args[0] == "vertical":
+            print(" ↓")
+        else:
+            print("→")
+    elif cmd == "move":
+        set_layout(i3, e)
 
 def main():
     """
@@ -70,6 +81,8 @@ def main():
 
     i3 = Connection()
     i3.on(Event.WINDOW_FOCUS, set_layout)
+    i3.on(Event.BINDING, polybar_print)
+    set_layout(i3, "")
     i3.main()
 
 
