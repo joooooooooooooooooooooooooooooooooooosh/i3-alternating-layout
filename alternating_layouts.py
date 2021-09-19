@@ -5,6 +5,8 @@ import sys
 import os
 from i3ipc import Connection, Event
 
+last_split = "h"
+
 def print_help():
     print("Usage: " + sys.argv[0] + " [-p path/to/pid.file]")
     print("")
@@ -61,14 +63,24 @@ def set_layout(i3, _):
 
 
 def print_status(split):
+    global last_split
+
     if split == "v":
         print(" ↓")
+        last_split = "v"
     elif split == "h":
         print("→")
+        last_split = "h"
     elif split == "tabbed":
         print(" t")
     elif split == "stacked":
         print(" s")
+    elif split == "t":
+        # for split toggle
+        if last_split == "h":
+            print_status("v")
+        else:
+            print_status("h")
 
 
 def keybind_hook(i3, e):
