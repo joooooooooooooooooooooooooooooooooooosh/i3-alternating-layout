@@ -73,7 +73,7 @@ def print_status(split):
         last_split = "h"
     elif split == "tabbed":
         print(" t")
-    elif split == "stacked":
+    elif split == "stacked" or split == "stacking":
         print(" s")
     elif split == "t":
         # for split toggle
